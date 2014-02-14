@@ -9,27 +9,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
   config.vm.box = "precise64"
-  
-  # TODO
-  # php5-memcached, php5-curl, mysql
 
   config.vm.define :web do |web_config|
-    web_config.vm.host_name = "devtrends"
+    web_config.vm.host_name = "scrumboard"
     web_config.vm.network "forwarded_port", guest: 80, host: 8080
-    web_config.vm.network "private_network", ip: "192.168.101.10"
-    web_config.vm.synced_folder "/Users/alex/Dev/Source/DigitalWindow/devtrends", "/vagrant", :mount_options => ['dmode=777', 'fmode=777']
+    web_config.vm.network "private_network", ip: "192.168.101.15"
+    web_config.vm.synced_folder "/Users/alex/Dev/Source/DigitalWindow/scrum-board", "/vagrant", :mount_options => ['dmode=777', 'fmode=777']
     web_config.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--memory", "1024"]
+      v.customize ["modifyvm", :id, "--memory", "4096"]
     end
 
     web_config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "../../chef-repo/cookbooks"
       chef.roles_path = "../../chef-repo/roles"
       chef.data_bags_path = "../../chef-repo/data_bags"
+      chef.add_recipe "apt"
       chef.add_recipe "php"
-      chef.add_recipe "memcached"
+      chef.add_recipe "mongodb::10gen_repo"
+      chef.add_recipe "mongodb::default"
       chef.add_recipe "composer"
-      chef.add_recipe "site_devtrends"
+      chef.add_recipe "site_scrumboard"
       chef.add_recipe "apache2::mod_php5"
     end
   end
