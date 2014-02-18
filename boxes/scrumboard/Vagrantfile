@@ -13,6 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define :web do |web_config|
     web_config.vm.host_name = "scrumboard"
     web_config.vm.network "forwarded_port", guest: 80, host: 8080
+    web_config.vm.network "forwarded_port", guest: 27017, host: 27017
     web_config.vm.network "private_network", ip: "192.168.101.15"
     web_config.vm.synced_folder "/Users/alex/Dev/Source/DigitalWindow/scrum-board", "/vagrant", :mount_options => ['dmode=777', 'fmode=777']
     web_config.vm.provider "virtualbox" do |v|
@@ -24,12 +25,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.roles_path = "../../chef-repo/roles"
       chef.data_bags_path = "../../chef-repo/data_bags"
       chef.add_recipe "apt"
+      chef.add_recipe "git"
+      chef.add_recipe "nodejs::install_from_binary"
       chef.add_recipe "php"
       chef.add_recipe "mongodb::10gen_repo"
       chef.add_recipe "mongodb::default"
-      chef.add_recipe "composer"
-      chef.add_recipe "site_scrumboard"
+      chef.add_recipe "memcached"
+
+      # All this should go in site_scrumboard but it started throwing bizarre errors
+      chef.add_recipe "apache2"
       chef.add_recipe "apache2::mod_php5"
+      chef.add_recipe "site_scrumboard"
+      chef.add_recipe "composer"
     end
   end
 end

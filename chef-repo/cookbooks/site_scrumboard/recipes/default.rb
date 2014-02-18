@@ -1,5 +1,3 @@
-include_recipe "apache2"
-
 php_pear "mongo" do
   action :install
 end
@@ -8,7 +6,15 @@ package "php5-intl" do
   action :install
 end
 
-package "git" do
+package "memcached" do
+  action :install
+end
+
+package "php5-memcached" do
+  action :install
+end
+
+package "php5-json" do
   action :install
 end
 
