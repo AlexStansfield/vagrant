@@ -8,14 +8,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
-  config.vm.box = "precise64"
+  config.vm.box = "saucy64"
 
   config.vm.define :web do |web_config|
-    web_config.vm.host_name = "scrumboard"
+    web_config.vm.host_name = "sandbox"
     web_config.vm.network "forwarded_port", guest: 80, host: 8080
-    web_config.vm.network "forwarded_port", guest: 27017, host: 27017
-    web_config.vm.network "private_network", ip: "192.168.101.15"
-    web_config.vm.synced_folder "/Users/alex/Dev/Source/DigitalWindow/scrum-board", "/vagrant", type: "nfs"
+    web_config.vm.network "private_network", ip: "192.168.101.16"
+    web_config.vm.synced_folder "/Users/alex/Dev/Source/Personal/sandbox", "/vagrant", type: "nfs"
     web_config.vm.provider "virtualbox" do |v|
       v.customize ["modifyvm", :id, "--memory", "4096"]
     end
@@ -30,17 +29,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Box Recipes
       chef.add_recipe "apt"
       chef.add_recipe "git"
-      chef.add_recipe "nodejs"
-      chef.add_recipe "npm"
       chef.add_recipe "php"
-      chef.add_recipe "mongodb::10gen_repo"
-      chef.add_recipe "mongodb::default"
-      chef.add_recipe "memcached"
 
       # All this should go in site_scrumboard but it started throwing bizarre errors
-      chef.add_recipe "apache2"
-      chef.add_recipe "apache2::mod_php5"
-      chef.add_recipe "site_scrumboard"
+#      chef.add_recipe "apache2"
+#      chef.add_recipe "apache2::mod_php5"
+      chef.add_recipe "php_site_dev"
       chef.add_recipe "composer"
     end
   end
