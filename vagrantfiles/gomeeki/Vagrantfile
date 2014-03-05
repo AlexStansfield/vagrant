@@ -30,12 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Box Recipes
       chef.add_recipe "apt"
       chef.add_recipe "git"
-      #chef.add_recipe "nodejs"
-      #chef.add_recipe "npm"
       chef.add_recipe "php"
-      #chef.add_recipe "mongodb::10gen_repo"
-      #chef.add_recipe "mongodb::default"
-      #chef.add_recipe "memcached"
 
       # All this should go in site_scrumboard but it started throwing bizarre errors
       #chef.add_recipe "apache2"
