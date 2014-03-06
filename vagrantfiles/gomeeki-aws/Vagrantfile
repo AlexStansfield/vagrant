@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+  config.vm.box = "dummy"
+
+  config.vm.synced_folder "/Users/alex/Dev/Source/Personal/gomeeki", "/vagrant_data"
+
+  config.vm.provider :aws do |aws, override|
+    ## Override settings from ~/.vagrant.d/VagrantFile here
+    #aws.access_key_id = "YOUR ACCESS KEY"
+    #aws.secret_access_key = "YOUR SECRET KEY"
+    
+    aws.ami = "ami-1dec116a"
+    aws.region = "eu-west-1"
+    aws.keypair_name = "gomeeki"
+    aws.security_groups = [ 'Ubuntu' ]
+
+    override.ssh.username = "ubuntu"
+    override.ssh.private_key_path = "/Users/alex/Documents/ssh/gomeeki.pem"
+  end
+
+  config.vm.provision :chef_solo do |chef|
+    # Chef paths
+    chef.cookbooks_path = "../../chef-repo/cookbooks"
+    chef.roles_path = "../../chef-repo/roles"
+    chef.data_bags_path = "../../chef-repo/data_bags"
+
+    # Box Recipes
+    chef.add_recipe "apt"
+    chef.add_recipe "git"
+    chef.add_recipe "php"
+
+    # All this should go in site_scrumboard but it started throwing bizarre errors
+    chef.add_recipe "site_gomeeki"
+  end
+end
